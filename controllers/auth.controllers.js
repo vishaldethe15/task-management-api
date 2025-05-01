@@ -21,10 +21,10 @@ export const register = async (req, res) => {
 
     const user = await UserModel.create({ name, email, password, role });
 
-    const token = await genToken({ userId: user._id, role: user.role });
+    const token = await genToken({ userId: user.id, role: user.role });
 
     res.status(201).json({
-      _id: user._id,
+      userId: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
@@ -59,10 +59,10 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid Credentials !" });
     }
 
-    const token = await genToken({ userId: user._id, role: user.role });
+    const token = await genToken({ userId: user.id, role: user.role });
 
     res.status(200).json({
-      _id: user._id,
+      userId: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
