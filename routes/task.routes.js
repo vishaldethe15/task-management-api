@@ -18,7 +18,7 @@ router
 
 router
   .route("/:id")
-  .put(verifyUser, updateTaskById)
+  .patch(verifyUser, updateTaskById)
   .delete(verifyUser, verifyRole(["manager", "admin"]), deleteTaskById);
 
 export default router;
