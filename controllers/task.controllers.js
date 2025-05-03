@@ -1,6 +1,5 @@
 import TaskModel from "../models/Task.model.js";
 import { taskSchema } from "../validators/task.validator.js";
-import { connectDB } from "../db/connect.js";
 
 export const createTask = async (req, res) => {
   const { userId } = req.user;

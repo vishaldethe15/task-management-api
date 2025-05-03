@@ -1,7 +1,6 @@
 import UserModel from "../models/User.model.js";
 import { registerSchema, loginSchema } from "../validators/auth.validator.js";
 import { genToken } from "../lib/genToken.js";
-import { connectDB } from "../db/connect.js";
 
 export const register = async (req, res) => {
   const { error } = registerSchema.validate(req.body);
