@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-  getAllTasksByUserId,
+  getAllTasksByAssignedTo,
   createTask,
   updateTaskById,
   deleteTaskById,
@@ -13,11 +13,11 @@ const router = express.Router();
 
 router
   .route("/")
+  .get(verifyUser, getAllTasksByAssignedTo)
   .post(verifyUser, verifyRole(["manager", "admin"]), createTask);
 
 router
   .route("/:id")
-  .get(verifyUser, getAllTasksByUserId)
   .put(verifyUser, updateTaskById)
   .delete(verifyUser, verifyRole(["manager", "admin"]), deleteTaskById);
 
