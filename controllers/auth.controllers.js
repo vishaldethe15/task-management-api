@@ -13,8 +13,6 @@ export const register = async (req, res) => {
   const { email, name, password, role } = req.body;
 
   try {
-    await connectDB();
-
     const existingUser = await UserModel.findOne({ email });
 
     if (existingUser)
@@ -43,8 +41,6 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    await connectDB();
-
     const user = await UserModel.findOne({ email });
 
     if (!user) {

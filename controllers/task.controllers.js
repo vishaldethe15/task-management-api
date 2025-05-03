@@ -14,8 +14,6 @@ export const createTask = async (req, res) => {
     req.body;
 
   try {
-    await connectDB();
-
     const task = await TaskModel.create({
       title,
       description,
@@ -56,8 +54,6 @@ export const getAllTasksByAssignedTo = async (req, res) => {
   } = req.query;
   const skip = (parseInt(page) - 1) * limit;
   try {
-    await connectDB();
-
     const filter = { assignedTo: userId };
 
     if (search) {
@@ -108,5 +104,77 @@ export const getAllTasksByAssignedTo = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-export const updateTaskById = async (req, res) => {};
-export const deleteTaskById = async (req, res) => {};
+export const updateTaskById = async (req, res) => {
+  const { id } = req.params;
+  const { userId, role } = req.user;
+  const updateData = req.body;
+
+  try {
+    const task = await TaskModel.findById(id).select(
+      "id title description status priority dueDate createdBy updatedAt"
+    );
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    if (role === "user") {
+      if ("status" in updateData && Object.keys(updateData).length === 1) {
+        task.status = updateData.status;
+      } else {
+        return res.status(403).json({
+          message: "Users can only update the task status.",
+        });
+      }
+    } else if (role === "manager") {
+      if (task?.createdBy?.toString() !== userId?.toString()) {
+        return res.status(403).json({
+          message: "Managers can only update tasks they have created.",
+        });
+      }
+      Object.assign(task, updateData);
+    } else if (role === "admin") {
+      Object.assign(task, updateData);
+    }
+
+    await task.save();
+
+    res.status(200).json({
+      message: "Task updated successfully",
+      task,
+    });
+  } catch (error) {
+    console.error("Update Task Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const deleteTaskById = async (req, res) => {
+  const { id } = req.params;
+  const { userId, role } = req.user;
+
+  try {
+    await connectDB();
+
+    const task = await TaskModel.findById(id);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    if (role === "manager") {
+      if (task.createdBy.toString() === userId.toString()) {
+        await TaskModel.findByIdAndDelete(id);
+        return res.status(200).json({ message: "Task deleted by manager" });
+      } else {
+        return res.status(403).json({
+          message: "You can only delete tasks you have created",
+        });
+      }
+    }
+
+    await TaskModel.findByIdAndDelete(id);
+    res.status(200).json({ message: "Task deleted by admin" });
+  } catch (error) {
+    console.error("Delete Task Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
