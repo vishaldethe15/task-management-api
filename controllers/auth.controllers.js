@@ -16,19 +16,17 @@ export const register = async (req, res) => {
     await connectDB();
 
     const existingUser = await UserModel.findOne({ email });
+
     if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
     const user = await UserModel.create({ name, email, password, role });
 
-    const token = await genToken({ userId: user.id, role: user.role });
-
     res.status(201).json({
-      userId: user._id,
+      userId: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
-      token,
     });
   } catch (error) {
     console.error(error);
@@ -62,7 +60,7 @@ export const login = async (req, res) => {
     const token = await genToken({ userId: user.id, role: user.role });
 
     res.status(200).json({
-      userId: user._id,
+      userId: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
