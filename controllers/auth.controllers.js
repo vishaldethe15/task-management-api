@@ -20,10 +20,13 @@ export const register = async (req, res) => {
     const user = await UserModel.create({ name, email, password, role });
 
     res.status(201).json({
-      userId: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
+      message: "User created successfully",
+      user: {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -55,11 +58,13 @@ export const login = async (req, res) => {
     const token = await genToken({ userId: user.id, role: user.role });
 
     res.status(200).json({
-      userId: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      token,
+      message: "Logged in successfully",
+      user: {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error(error);

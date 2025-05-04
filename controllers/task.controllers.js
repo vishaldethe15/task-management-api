@@ -24,14 +24,17 @@ export const createTask = async (req, res) => {
     });
 
     res.status(201).json({
-      taskId: task.id,
-      title: task.title,
-      description: task.description,
-      priority: task.priority,
-      status: task.status,
-      createdBy: task.createdBy,
-      assignedTo: task.assignedTo,
-      createdAt: task.createdAt,
+      message: "Task created successfully",
+      task: {
+        taskId: task.id,
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        status: task.status,
+        createdBy: task.createdBy,
+        assignedTo: task.assignedTo,
+        createdAt: task.createdAt,
+      },
     });
   } catch (error) {
     console.error(error);
