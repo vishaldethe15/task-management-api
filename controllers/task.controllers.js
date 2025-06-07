@@ -106,6 +106,7 @@ export const getAllTasksByAssignedTo = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 export const updateTaskById = async (req, res) => {
   const { id } = req.params;
   const { userId, role } = req.user;

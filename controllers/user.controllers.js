@@ -26,6 +26,7 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 export const updateUserById = async (req, res) => {
   const { id } = req.params;
   const { userId, role: userRole } = req.user;
